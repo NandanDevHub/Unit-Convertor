@@ -12,6 +12,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Disables pre-compression of static web assets. Workaround for a duplicate-key
+         bug in the ApplyCompressionNegotiation task in .NET SDK 9.0.300. -->
+    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
   </PropertyGroup>
 
 </Project>
