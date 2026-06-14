@@ -7,7 +7,6 @@ A RESTful API built with ASP.NET Core 9 for converting numeric values between un
 - Convert values across **7 categories**: length, temperature, weight, area, volume, speed, and digital storage
 - Over **60 units** supported out of the box
 - Clean JSON responses with input/output unit names, symbols, and category
-- Swagger/OpenAPI documentation at `/swagger`
 - Minimal browser UI served at the root (`/`)
 
 ## Project Structure
@@ -35,7 +34,7 @@ UnitConversionAPI/
 ## Running Locally
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/NandanDevHub/Unit-Convertor.git
 cd UnitConversionAPI/src/UnitConversionAPI.Web
 dotnet run
 ```
@@ -45,7 +44,7 @@ The application starts on **http://localhost:5240**.
 | URL | Description |
 |-----|-------------|
 | `http://localhost:5240/` | Browser-based conversion UI |
-| `http://localhost:5240/swagger` | Swagger / OpenAPI docs |
+| `http://localhost:5240/swagger` | Swagger |
 | `http://localhost:5240/api/units` | List all unit categories and units |
 | `http://localhost:5240/api/convert?value=100&from=celsius&to=fahrenheit` | Convert a value |
 
@@ -95,13 +94,18 @@ GET /api/units/{category}
 
 **Supported categories:** `length`, `temperature`, `weight`, `area`, `volume`, `speed`, `storage`
 
+## Screenshots
+
+![Conversion UI](screenshots/ui_ozTokg.png)
+![API Response](screenshots/api_response.png)
+
 ## Design Decisions
 
 **Pivot/base-unit pattern for linear conversions**  
 Each unit stores a single factor that converts to and from the category's base unit (e.g., meter for length, kilogram for weight). Converting between any two compatible units is always two operations: A → base → B. This means adding a new unit only requires one number, regardless of how many other units already exist in that category.
 
 **Explicit formula functions for temperature**  
-Temperature uses offset-based formulas (not pure ratios), so it cannot use the linear factor approach. Each temperature unit carries explicit `ToBase` / `FromBase` delegates that encode the Celsius pivot formulas. The `ConversionService` does not need to know whether a category is linear or not — it just calls the delegates.
+Temperature uses offset-based formulas (not pure ratios), so it cannot use the linear factor approach. Each temperature unit carries explicit `ToBase` / `FromBase` delegates that encode the Celsius pivot formulas. The `ConversionService` does not need to know whether a category is linear or not - it just calls the delegates.
 
 **In-memory unit registry**  
 `UnitRegistry` is registered as a singleton and populated once at startup. Given the current scale this is straightforward, and the `IUnitRegistry` abstraction means it can be swapped for a database-backed implementation later without changing any other code.
